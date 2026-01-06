@@ -19,7 +19,7 @@ def spark() -> SparkSession:
 @pytest.fixture
 def spark_io(spark: SparkSession):
     """Fixture que crea una instancia de SparkIO con sesión existente."""
-    from src.utils.spark_io import SparkIO
+    from utils.spark_io import SparkIO
 
     sio = SparkIO.__new__(SparkIO)
     sio.spark = spark

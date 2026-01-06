@@ -69,7 +69,7 @@ class TestTransformerInit:
         """
         Verifica que se configure correctamente spark_io.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         transformer = Transformer(spark_io=mock_spark_io)
 
@@ -79,7 +79,7 @@ class TestTransformerInit:
         """
         Verifica que exista el registro de cleaners.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         transformer = Transformer(spark_io=mock_spark_io)
 
@@ -90,7 +90,7 @@ class TestTransformerInit:
         """
         Verifica que exista el registro de tablas.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         transformer = Transformer(spark_io=mock_spark_io)
 
@@ -105,7 +105,7 @@ class TestTransformerCleanTables:
         """
         Verifica que _clean_tables retorne un diccionario.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         # Configurar mock para retornar solo una tabla
         mock_spark_io.read_latest_parquet = Mock(
@@ -124,7 +124,7 @@ class TestTransformerCleanTables:
         """
         Verifica que se omitan las tablas que no existen.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         mock_spark_io.read_latest_parquet = Mock(return_value=None)
         mock_spark_io.write_timestamped_parquet = Mock()
@@ -140,7 +140,7 @@ class TestTransformerCleanTables:
         """
         Verifica que se use AlertsCleaner para la tabla alerts.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         # Solo retornar datos para alerts
         def mock_read(name, path):
@@ -169,7 +169,7 @@ class TestTransformerCleanTables:
         """
         Verifica que se llame a write para cada tabla procesada.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         def mock_read(name, path):
             if name == "alerts":
@@ -198,7 +198,7 @@ class TestTransformerTransform:
         """
         Verifica que transform llame a _clean_tables.
         """
-        from src.transform.transformer import Transformer
+        from transform.transformer import Transformer
 
         mock_spark_io.read_latest_parquet = Mock(return_value=None)
 

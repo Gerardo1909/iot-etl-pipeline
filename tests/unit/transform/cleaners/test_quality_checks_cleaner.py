@@ -38,7 +38,7 @@ class TestQualityChecksCleanerHandleNulls:
         """
         Verifica que se eliminen las filas con check_id nulo.
         """
-        from src.transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
+        from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
 
         cleaner = QualityChecksCleaner(df_checks_with_nulls)
         result = cleaner._handle_nulls(df_checks_with_nulls)
@@ -49,7 +49,7 @@ class TestQualityChecksCleanerHandleNulls:
         """
         Verifica que notes se llene con valor por defecto cuando es NULL.
         """
-        from src.transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
+        from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
 
         cleaner = QualityChecksCleaner(df_checks_with_nulls)
         result = cleaner._handle_nulls(df_checks_with_nulls)
@@ -68,7 +68,7 @@ class TestQualityChecksCleanerHandleNulls:
         """
         Verifica que se mantengan los valores existentes de notes.
         """
-        from src.transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
+        from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
 
         cleaner = QualityChecksCleaner(df_checks_with_nulls)
         result = cleaner._handle_nulls(df_checks_with_nulls)

@@ -36,7 +36,7 @@ class TestMaintenanceLogsCleanerHandleNulls:
         """
         Verifica que se eliminen las filas con log_id nulo.
         """
-        from src.transform.cleaners.maintenance_logs_cleaner import (
+        from transform.cleaners.maintenance_logs_cleaner import (
             MaintenanceLogsCleaner,
         )
 
@@ -51,7 +51,7 @@ class TestMaintenanceLogsCleanerHandleNulls:
         """
         Verifica que parts_replaced se llene con valor por defecto cuando es NULL.
         """
-        from src.transform.cleaners.maintenance_logs_cleaner import (
+        from transform.cleaners.maintenance_logs_cleaner import (
             MaintenanceLogsCleaner,
         )
 
@@ -76,7 +76,7 @@ class TestMaintenanceLogsCleanerHandleNulls:
         """
         Verifica que se mantengan los valores existentes de parts_replaced.
         """
-        from src.transform.cleaners.maintenance_logs_cleaner import (
+        from transform.cleaners.maintenance_logs_cleaner import (
             MaintenanceLogsCleaner,
         )
 

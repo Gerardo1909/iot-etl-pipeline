@@ -34,7 +34,7 @@ class TestBaseCleanerHandleNulls:
         """
         Verifica que se eliminen las filas con id nulo.
         """
-        from src.transform.cleaners.base_cleaner import BaseCleaner
+        from transform.cleaners.base_cleaner import BaseCleaner
 
         cleaner = BaseCleaner(df_with_null_ids, id_column="id")
         result = cleaner._handle_nulls(df_with_null_ids)
@@ -45,7 +45,7 @@ class TestBaseCleanerHandleNulls:
         """
         Verifica que se mantengan las filas con id válido.
         """
-        from src.transform.cleaners.base_cleaner import BaseCleaner
+        from transform.cleaners.base_cleaner import BaseCleaner
 
         df = spark.createDataFrame(
             [
@@ -80,7 +80,7 @@ class TestBaseCleanerHandleDuplicates:
         """
         Verifica que se eliminen los duplicados exactos.
         """
-        from src.transform.cleaners.base_cleaner import BaseCleaner
+        from transform.cleaners.base_cleaner import BaseCleaner
 
         cleaner = BaseCleaner(df_with_duplicates, id_column="id")
         result = cleaner._handle_duplicates(df_with_duplicates)
@@ -107,7 +107,7 @@ class TestBaseCleanerClean:
         """
         Verifica que el método clean aplique todos los pasos de limpieza.
         """
-        from src.transform.cleaners.base_cleaner import BaseCleaner
+        from transform.cleaners.base_cleaner import BaseCleaner
 
         cleaner = BaseCleaner(df_dirty, id_column="id")
         result = cleaner.clean()
@@ -120,7 +120,7 @@ class TestBaseCleanerClean:
         """
         Verifica que clean retorne un DataFrame.
         """
-        from src.transform.cleaners.base_cleaner import BaseCleaner
+        from transform.cleaners.base_cleaner import BaseCleaner
         from pyspark.sql import DataFrame
 
         cleaner = BaseCleaner(df_dirty, id_column="id")

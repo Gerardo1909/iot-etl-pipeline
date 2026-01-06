@@ -70,7 +70,7 @@ class TestAlertsCleanerHandleNulls:
         """
         Verifica que se eliminen las filas con alert_id nulo.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_alerts_with_nulls)
         result = cleaner._handle_nulls(df_alerts_with_nulls)
@@ -83,7 +83,7 @@ class TestAlertsCleanerHandleNulls:
         """
         Verifica que acknowledged_at se llene con resolved_at cuando es NULL.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_alerts_with_nulls)
         result = cleaner._handle_nulls(df_alerts_with_nulls)
@@ -105,7 +105,7 @@ class TestAlertsCleanerHandleNulls:
         """
         Verifica que resolved_by se llene con 'unknown' cuando es NULL.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_alerts_with_nulls)
         result = cleaner._handle_nulls(df_alerts_with_nulls)
@@ -128,7 +128,7 @@ class TestAlertsCleanerHandleNulls:
         """
         Verifica que se agregue la columna alert_status.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_alerts_with_nulls)
         result = cleaner._handle_nulls(df_alerts_with_nulls)
@@ -176,7 +176,7 @@ class TestAlertsCleanerAlertStatus:
         """
         Verifica que status sea 'resolved' cuando resolved_at tiene valor.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_for_status)
         result = cleaner._handle_nulls(df_for_status)
@@ -190,7 +190,7 @@ class TestAlertsCleanerAlertStatus:
         """
         Verifica que status sea 'acknowledged' cuando solo acknowledged_at tiene valor.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_for_status)
         result = cleaner._handle_nulls(df_for_status)
@@ -202,7 +202,7 @@ class TestAlertsCleanerAlertStatus:
         """
         Verifica que status sea 'pending' cuando ambos son NULL.
         """
-        from src.transform.cleaners.alerts_cleaner import AlertsCleaner
+        from transform.cleaners.alerts_cleaner import AlertsCleaner
 
         cleaner = AlertsCleaner(df_for_status)
         result = cleaner._handle_nulls(df_for_status)

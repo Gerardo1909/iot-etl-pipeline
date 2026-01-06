@@ -50,7 +50,7 @@ class TestDefectsCleanerHandleNulls:
         """
         Verifica que se eliminen las filas con defect_id nulo.
         """
-        from src.transform.cleaners.defects_cleaner import DefectsCleaner
+        from transform.cleaners.defects_cleaner import DefectsCleaner
 
         cleaner = DefectsCleaner(df_defects_with_nulls)
         result = cleaner._handle_nulls(df_defects_with_nulls)
@@ -63,7 +63,7 @@ class TestDefectsCleanerHandleNulls:
         """
         Verifica que corrective_action se llene con valor por defecto cuando es NULL.
         """
-        from src.transform.cleaners.defects_cleaner import DefectsCleaner
+        from transform.cleaners.defects_cleaner import DefectsCleaner
 
         cleaner = DefectsCleaner(df_defects_with_nulls)
         result = cleaner._handle_nulls(df_defects_with_nulls)
@@ -88,7 +88,7 @@ class TestDefectsCleanerHandleNulls:
         """
         Verifica que se mantengan los valores existentes de corrective_action.
         """
-        from src.transform.cleaners.defects_cleaner import DefectsCleaner
+        from transform.cleaners.defects_cleaner import DefectsCleaner
 
         cleaner = DefectsCleaner(df_defects_with_nulls)
         result = cleaner._handle_nulls(df_defects_with_nulls)
