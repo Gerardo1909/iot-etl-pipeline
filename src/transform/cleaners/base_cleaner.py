@@ -25,7 +25,7 @@ class BaseCleaner:
         return df
     
     def _handle_nulls(self, df: DataFrame) -> DataFrame:
-        """p
+        """
         Implementa lógica de manejo de valores nulos con lógica de negocio
         específica de la tabla.
         """
