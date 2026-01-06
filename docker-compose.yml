@@ -1,0 +1,27 @@
+services:
+  etl:
+    build: .
+    container_name: iot-etl-pipeline
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data      
+      - ./src:/app/src:ro     
+      - ./config:/app/config:ro
+    stdin_open: true
+    tty: true
+
+  test:
+    build: .
+    container_name: iot-etl-tests
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./config:/app/config:ro
+      - ./reports:/app/reports
+    command: ["pytest"]
+    profiles:
+      - test
