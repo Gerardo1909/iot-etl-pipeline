@@ -7,7 +7,6 @@ Combina quality_checks con defects para métricas de calidad.
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.window import Window
 
 
 def build_fact_quality(
@@ -83,10 +82,10 @@ def build_fact_quality(
     # dim_operator (inspector_id -> operator_sk)
     checks = checks.join(
         dim_operator.select(
-            F.col("operator_sk").alias("inspector_sk"),
-            F.col("operator_id").alias("dim_inspector_id"),
+            F.col("operator_sk"),
+            F.col("operator_id"),
         ),
-        checks["inspector_id"] == F.col("dim_inspector_id"),
+        checks["inspector_id"] == F.col("operator_id"),
         how="left",
     )
 
@@ -94,15 +93,14 @@ def build_fact_quality(
     checks = checks.join(
         dim_product.select(
             F.col("product_sk"),
-            F.col("product_code").alias("dim_product_code"),
+            F.col("product_code"),
         ),
-        F.col("order_product_code") == F.col("dim_product_code"),
+        F.col("order_product_code") == F.col("product_code"),
         how="left",
     )
 
     # Generar SK para el fact
-    window = Window.orderBy("check_id")
-    checks = checks.withColumn("quality_sk", F.row_number().over(window))
+    checks = checks.withColumn("quality_sk", F.monotonically_increasing_id())
 
     # Seleccionar columnas finales según el esquema
     return checks.select(
@@ -111,7 +109,7 @@ def build_fact_quality(
         "line_sk",
         "product_sk",
         "order_sk",
-        F.col("inspector_sk").alias("operator_sk"),
+        "operator_sk",
         "sample_size",
         "defects_found",
         "defect_rate_pct",
