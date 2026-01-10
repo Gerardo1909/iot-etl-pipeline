@@ -95,7 +95,7 @@ class Transformer:
         dimensions = self._build_dimensions(cleaned_tables)
 
         # Fase 3: Construir hechos (Silver + Dims → Gold)
-        facts = self._build_facts(cleaned_tables, dimensions)
+        self._build_facts(cleaned_tables, dimensions)
 
     def _clean_tables(self) -> Dict[str, DataFrame]:
         """
