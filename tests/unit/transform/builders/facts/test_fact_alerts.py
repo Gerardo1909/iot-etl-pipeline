@@ -93,7 +93,7 @@ class TestBuildFactAlerts:
                 {
                     "alert_type_sk": 1,
                     "alert_type_name": "threshold_exceeded",
-                    "severity": "high",
+                    "severity_level": "high",
                 },
             ]
         )
