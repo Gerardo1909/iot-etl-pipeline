@@ -5,7 +5,7 @@ Pruebas unitarias para build_fact_sensor_readings.
 import pytest
 import pytest_check as check
 from pyspark.sql import SparkSession
-from datetime import date, datetime
+from datetime import date
 
 
 @pytest.fixture(scope="module")
