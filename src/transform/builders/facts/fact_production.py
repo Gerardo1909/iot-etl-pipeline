@@ -7,7 +7,6 @@ Combina production_output con production_orders para métricas de producción.
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.window import Window
 
 
 def build_fact_production(
@@ -108,8 +107,7 @@ def build_fact_production(
     )
 
     # Generar SK para el fact 
-    window = Window.orderBy("output_id")
-    output = output.withColumn("production_sk", F.row_number().over(window))
+    output = output.withColumn("production_sk", F.monotonically_increasing_id())
 
     # Calcular métricas derivadas
     output = output.withColumn(
