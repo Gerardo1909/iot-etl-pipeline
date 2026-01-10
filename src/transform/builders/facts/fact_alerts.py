@@ -7,7 +7,6 @@ Registra alertas de sensores con tiempos de resolución.
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.window import Window
 
 
 def build_fact_alerts(
@@ -104,14 +103,15 @@ def build_fact_alerts(
         dim_alert_type.select(
             F.col("alert_type_sk"),
             F.col("alert_type_name"),
+            F.col("severity_level"),
         ),
-        alerts["alert_type"] == F.col("alert_type_name"),
+        (alerts["alert_type"] == F.col("alert_type_name"))
+        & (alerts["severity"] == F.col("severity_level")),
         how="left",
     )
 
     # Generar SK para el fact
-    window = Window.orderBy("alert_id")
-    alerts = alerts.withColumn("alert_sk", F.row_number().over(window))
+    alerts = alerts.withColumn("alert_sk", F.monotonically_increasing_id())
 
     # Seleccionar columnas finales
     return alerts.select(
