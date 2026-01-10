@@ -27,13 +27,15 @@ def build_dim_date(
         DataFrame con la dimensión de fechas
     """
     # Generar secuencia de fechas
-    df = spark.sql(f"""
-        SELECT explode(sequence(
-            to_date('{start_date}'), 
-            to_date('{end_date}'), 
-            interval 1 day
-        )) as date_actual
-    """)
+    df = spark.range(1).select(
+        F.explode(
+            F.sequence(
+                F.to_date(F.lit(start_date.isoformat())),
+                F.to_date(F.lit(end_date.isoformat())),
+                F.expr("INTERVAL 1 DAY"),
+            )
+        ).alias("date_actual")
+    )
 
     # Agregar atributos de fecha
     df = df.withColumn("date_sk", F.date_format("date_actual", "yyyyMMdd").cast("int"))
