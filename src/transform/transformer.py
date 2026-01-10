@@ -14,6 +14,26 @@ from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
 from transform.cleaners.defects_cleaner import DefectsCleaner
 from transform.cleaners.maintenance_logs_cleaner import MaintenanceLogsCleaner
 
+# Builders de dimensiones
+from transform.builders.dimensions import (
+    build_dim_date,
+    build_dim_time,
+    build_simple_dimension,
+    build_dim_product,
+    build_dim_alert_type,
+    build_dim_maintenance_type,
+    SIMPLE_DIMENSIONS,
+)
+
+# Builders de hechos
+from transform.builders.facts import (
+    build_fact_production,
+    build_fact_quality,
+    build_fact_sensor_readings,
+    build_fact_maintenance,
+    build_fact_alerts,
+)
+
 
 # Configuración de guardado
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -72,10 +92,10 @@ class Transformer:
         cleaned_tables = self._clean_tables()
 
         # Fase 2: Construir dimensiones (Silver → Gold)
-        # dimensions = self._build_dimensions(cleaned_tables)
+        dimensions = self._build_dimensions(cleaned_tables)
 
         # Fase 3: Construir hechos (Silver + Dims → Gold)
-        # facts = self._build_facts(cleaned_tables, dimensions)
+        facts = self._build_facts(cleaned_tables, dimensions)
 
     def _clean_tables(self) -> Dict[str, DataFrame]:
         """
@@ -120,11 +140,31 @@ class Transformer:
         """
         dimensions = {}
 
-        # TODO: Implementar builders de dimensiones
+        # 1. Dimensiones generadas (no dependen de datos)
+        dimensions["dim_date"] = build_dim_date(self.spark_io.session)
+        dimensions["dim_time"] = build_dim_time(self.spark_io.session)
 
-        # Guardar cada dimensión en Gold
+        # 2. Dimensiones simples (1:1 con tablas fuente)
+        for dim_name, config in SIMPLE_DIMENSIONS.items():
+            source_df = cleaned.get(config.source_table)
+            if source_df is not None:
+                dimensions[dim_name] = build_simple_dimension(source_df, config)
+
+        # 3. Dimensiones derivadas (extraen valores únicos)
+        if "production_orders" in cleaned:
+            dimensions["dim_product"] = build_dim_product(cleaned["production_orders"])
+
+        if "alerts" in cleaned:
+            dimensions["dim_alert_type"] = build_dim_alert_type(cleaned["alerts"])
+
+        if "maintenance_logs" in cleaned:
+            dimensions["dim_maintenance_type"] = build_dim_maintenance_type(
+                cleaned["maintenance_logs"]
+            )
+
+        # Guardar cada dimensión en output
         for dim_name, df in dimensions.items():
-            self.spark_io.write_parquet(df, OUTPUT_DATA_DIR / dim_name)
+            self.spark_io.write_timestamped_parquet(df, OUTPUT_DATA_DIR / dim_name)
 
         return dimensions
 
@@ -144,10 +184,115 @@ class Transformer:
         """
         facts = {}
 
-        # TODO: Implementar builders de hechos
+        # fact_production
+        if all(
+            k in cleaned for k in ["production_output", "production_orders"]
+        ) and all(
+            k in dimensions
+            for k in [
+                "dim_date",
+                "dim_shift",
+                "dim_factory",
+                "dim_production_line",
+                "dim_product",
+                "dim_order",
+            ]
+        ):
+            facts["fact_production"] = build_fact_production(
+                production_output_df=cleaned["production_output"],
+                production_orders_df=cleaned["production_orders"],
+                dim_date=dimensions["dim_date"],
+                dim_shift=dimensions["dim_shift"],
+                dim_factory=dimensions["dim_factory"],
+                dim_production_line=dimensions["dim_production_line"],
+                dim_product=dimensions["dim_product"],
+                dim_order=dimensions["dim_order"],
+            )
 
-        # Guardar cada fact en 'output'
+        # fact_quality
+        if "quality_checks" in cleaned and all(
+            k in dimensions
+            for k in [
+                "dim_date",
+                "dim_production_line",
+                "dim_product",
+                "dim_order",
+                "dim_operator",
+            ]
+        ):
+            facts["fact_quality"] = build_fact_quality(
+                quality_checks_df=cleaned["quality_checks"],
+                dim_date=dimensions["dim_date"],
+                dim_production_line=dimensions["dim_production_line"],
+                dim_product=dimensions["dim_product"],
+                dim_order=dimensions["dim_order"],
+                dim_operator=dimensions["dim_operator"],
+            )
+
+        # fact_sensor_readings (evento)
+        if "sensor_readings" in cleaned and all(
+            k in dimensions
+            for k in [
+                "dim_date",
+                "dim_time",
+                "dim_sensor",
+                "dim_machine",
+                "dim_production_line",
+            ]
+        ):
+            facts["fact_sensor_readings"] = build_fact_sensor_readings(
+                sensor_readings_df=cleaned["sensor_readings"],
+                dim_date=dimensions["dim_date"],
+                dim_time=dimensions["dim_time"],
+                dim_sensor=dimensions["dim_sensor"],
+                dim_machine=dimensions["dim_machine"],
+                dim_production_line=dimensions["dim_production_line"],
+            )
+
+        # fact_maintenance
+        if "maintenance_logs" in cleaned and all(
+            k in dimensions
+            for k in [
+                "dim_date",
+                "dim_machine",
+                "dim_production_line",
+                "dim_maintenance_type",
+                "dim_operator",
+            ]
+        ):
+            facts["fact_maintenance"] = build_fact_maintenance(
+                maintenance_logs_df=cleaned["maintenance_logs"],
+                dim_date=dimensions["dim_date"],
+                dim_machine=dimensions["dim_machine"],
+                dim_production_line=dimensions["dim_production_line"],
+                dim_maintenance_type=dimensions["dim_maintenance_type"],
+                dim_operator=dimensions["dim_operator"],
+            )
+
+        # fact_alerts
+        if "alerts" in cleaned and all(
+            k in dimensions
+            for k in [
+                "dim_date",
+                "dim_time",
+                "dim_sensor",
+                "dim_machine",
+                "dim_production_line",
+                "dim_alert_type",
+            ]
+        ):
+            facts["fact_alerts"] = build_fact_alerts(
+                alerts_df=cleaned["alerts"],
+                dim_date=dimensions["dim_date"],
+                dim_time=dimensions["dim_time"],
+                dim_sensor=dimensions["dim_sensor"],
+                dim_machine=dimensions["dim_machine"],
+                dim_production_line=dimensions["dim_production_line"],
+                dim_alert_type=dimensions["dim_alert_type"],
+            )
+
+        # Guardar cada fact en output
         for fact_name, df in facts.items():
-            self.spark_io.write_parquet(df, OUTPUT_DATA_DIR / fact_name)
+            self.spark_io.write_timestamped_parquet(df, OUTPUT_DATA_DIR / fact_name)
 
         return facts
