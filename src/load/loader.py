@@ -23,7 +23,7 @@ class Loader:
         writer: Implementación de DataWriter para el destino.
     """
 
-    def __init__(self, source_path: Path, writer: DataWriter):
+    def __init__(self, source_path: Union[Path, str], writer: DataWriter):
         """
         Inicializa el Loader.
 

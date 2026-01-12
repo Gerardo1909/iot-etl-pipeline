@@ -23,7 +23,7 @@ class CSVWriter(DataWriter):
 
     def __init__(
         self,
-        base_path: Path,
+        base_path: Union[Path, str],
         delimiter: str = ",",
         include_header: bool = True,
     ):
@@ -32,7 +32,7 @@ class CSVWriter(DataWriter):
         self.include_header = include_header
         self.base_path.mkdir(parents=True, exist_ok=True)
 
-    def write(self, table: pa.Table, table_name: str) -> Path:
+    def write(self, table: pa.Table, table_name: str) -> Union[Path, str]:
         """
         Escribe una tabla PyArrow a un archivo CSV.
 
