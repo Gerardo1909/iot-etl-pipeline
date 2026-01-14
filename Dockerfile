@@ -69,9 +69,7 @@ RUN rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/hadoop-azure-* \
     && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/derby-* \
     && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/derbytools-* \
     && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/derbyclient-* \
-    && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/derbyshared-* \
-    && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/spark-streaming_* \
-    && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/spark-graphx_*
+    && rm -rf .venv/lib/python3.13/site-packages/pyspark/jars/derbyshared-* 
 
 # Copy application code and tests
 COPY --chown=appuser:appuser ./src ./src
