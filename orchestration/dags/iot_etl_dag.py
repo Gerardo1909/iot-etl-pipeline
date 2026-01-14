@@ -26,8 +26,16 @@ default_args = {
 }
 
 # Configuración de Docker
-IMAGE_NAME = os.environ["ETL_IMAGE_NAME"]
-PROJECT_ROOT_HOST = os.environ["ETL_PROJECT_ROOT"]
+IMAGE_NAME = os.getenv("ETL_IMAGE_NAME")
+if not IMAGE_NAME:
+    raise RuntimeError(
+        "La variable de entorno 'ETL_IMAGE_NAME' debe estar configurada para el DAG ETL."
+    )
+PROJECT_ROOT_HOST = os.getenv("ETL_PROJECT_ROOT")
+if not PROJECT_ROOT_HOST:
+    raise RuntimeError(
+        "La variable de entorno 'ETL_PROJECT_ROOT' debe estar configurada para el DAG ETL."
+    )
 
 # Volúmenes compartidos entre tareas
 MOUNTS = [
