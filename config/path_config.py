@@ -24,7 +24,12 @@ OUTPUT_DATA_DIR = DATA_DIR / "output"  # Gold: modelo dimensional
 EXPORTS_DIR = DATA_DIR / "exports"  # Exportaciones (CSV, etc.)
 
 # Cargar variables desde .env
-load_dotenv(PROJECT_ROOT / ".env")
+ENV_PATH = PROJECT_ROOT / ".env"
+if not ENV_PATH.exists():
+    raise FileNotFoundError(
+        f"El archivo .env no fue encontrado en {ENV_PATH}. Por favor, créalo con la configuración necesaria."
+    )
+load_dotenv(dotenv_path=ENV_PATH)
 
 # Configuración de la API
 API_CONFIG = {
@@ -43,6 +48,10 @@ def get_api_url() -> str:
     Returns:
         URL formateada para la petición a la API.
     """
+    if not all(API_CONFIG.values()):
+        raise ValueError(
+            "Faltan configuraciones de la API en las variables de entorno."
+        )
     return (
         f"{API_CONFIG['base_url']}?"
         f"email={API_CONFIG['email']}&"
