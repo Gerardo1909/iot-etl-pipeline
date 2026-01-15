@@ -3,11 +3,9 @@ Módulo orquestador del proceso de transformación.
 """
 
 from typing import Dict, Type
-from pathlib import Path
 
 from pyspark.sql import DataFrame
 
-from utils.spark_io import SparkIO
 from transform.cleaners.base_cleaner import BaseCleaner
 from transform.cleaners.alerts_cleaner import AlertsCleaner
 from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
@@ -70,11 +68,7 @@ class Transformer:
     }
 
     def __init__(
-        self,
-        spark_io: SparkIO,
-        raw_data_dir: Path,
-        processed_data_dir: Path,
-        output_data_dir: Path,
+        self, spark_io, raw_data_dir: str, processed_data_dir: str, output_data_dir: str
     ):
         """
         Args:
@@ -121,9 +115,8 @@ class Transformer:
             df_cleaned = cleaner.clean()
 
             # Guardar en processed con timestamp (permite versionado)
-            self.spark_io.write_timestamped_parquet(
-                df_cleaned, self.processed_data_dir / table_name
-            )
+            processed_path = f"{self.processed_data_dir}/{table_name}/"
+            self.spark_io.write_parquet(df_cleaned, processed_path)
             cleaned[table_name] = df_cleaned
 
         return cleaned
@@ -165,7 +158,8 @@ class Transformer:
 
         # Guardar cada dimensión en output
         for dim_name, df in dimensions.items():
-            self.spark_io.write_timestamped_parquet(df, self.output_data_dir / dim_name)
+            output_path = f"{self.output_data_dir}/{dim_name}/"
+            self.spark_io.write_parquet(df, output_path)
 
         return dimensions
 
@@ -294,17 +288,17 @@ class Transformer:
 
         # Guardar cada fact en output
         for fact_name, df in facts.items():
-            self.spark_io.write_timestamped_parquet(
-                df, self.output_data_dir / fact_name
-            )
+            output_path = f"{self.output_data_dir}/{fact_name}/"
+            self.spark_io.write_parquet(df, output_path)
 
         return facts
 
 
 if __name__ == "__main__":
     from config.path_config import RAW_DATA_DIR, PROCESSED_DATA_DIR, OUTPUT_DATA_DIR
+    from utils.spark_io import SparkIO
 
-    spark_io = SparkIO(app_name="IoT_ETL_Transform")
+    spark_io = SparkIO()
     transformer = Transformer(
         spark_io, RAW_DATA_DIR, PROCESSED_DATA_DIR, OUTPUT_DATA_DIR
     )
