@@ -2,119 +2,70 @@
 Módulo orquestador de la fase de carga del ETL.
 """
 
-from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List
+from config.path_config import OUTPUT_DATA_DIR, EXPORTS_DIR
 
-import pyarrow.parquet as pq
 import pyarrow as pa
-
-from load.writers.base import DataWriter
 
 
 class Loader:
     """
-    Orquesta la fase de carga del ETL.
-
-    Lee tablas Parquet del directorio de output y las escribe
-    al destino configurado mediante el writer inyectado.
-
-    Attributes:
-        source_path: Directorio con los Parquet de salida (data/output).
-        writer: Implementación de DataWriter para el destino.
+    Orquesta la fase de carga del flujo ETL
+    para exportar CSV a S3.
     """
 
-    def __init__(self, source_path: Union[Path, str], writer: DataWriter):
-        """
-        Inicializa el Loader.
+    def __init__(
+        self,
+        IO_operator,
+        output_data_dir: str = OUTPUT_DATA_DIR,
+        exports_dir: str = EXPORTS_DIR,
+    ):
+        self.output_data_dir = output_data_dir
+        self.exports_dir = exports_dir
+        self.IO_operator = IO_operator
 
-        Args:
-            source_path: Path al directorio con Parquet de salida.
-            writer: Writer concreto para el destino (CSV, Postgres, etc.).
+    def _list_tables(self) -> List[str]:
         """
-        self.source_path = Path(source_path)
-        self.writer = writer
-
-    def list_tables(self) -> List[str]:
+        Lista las tablas disponibles en el directorio S3 de output.
+        Retorna los nombres de subcarpetas (tablas) bajo output_data_dir.
         """
-        Lista las tablas disponibles en el directorio de salida.
+        bucket, prefix = self.IO_operator._parse_s3_path(self.output_data_dir)
+        objects = self.IO_operator.get_bucket_objects(bucket, prefix)
+        table_names = set()
+        for obj in objects:
+            key = obj["Key"]
+            relative_path = key[len(prefix) :].lstrip("/")
+            parts = relative_path.split("/")
+            if len(parts) > 1:
+                table_names.add(parts[0])
+        return list(table_names)
 
+    def load(self) -> Dict[str, str]:
+        """
+        Lee todas las tablas Parquet presentes en output_data_dir y las exporta como CSV a exports_dir en S3 usando pyarrow.
         Returns:
-            Lista de nombres de tablas (subdirectorios con Parquet).
+            Diccionario {nombre_tabla: path S3 de exportación}.
         """
-        if not self.source_path.exists():
-            return []
-
-        return [
-            d.name
-            for d in self.source_path.iterdir()
-            if d.is_dir() and self._has_parquet_files(d)
-        ]
-
-    def _has_parquet_files(self, directory: Path) -> bool:
-        """Verifica si un directorio contiene archivos Parquet."""
-        return any(directory.glob("*.parquet")) or any(directory.glob("**/*.parquet"))
-
-    def _read_table(self, table_name: str) -> pa.Table:
-        """
-        Lee una tabla Parquet del directorio de salida.
-
-        Args:
-            table_name: Nombre de la tabla (subdirectorio).
-
-        Returns:
-            PyArrow Table con los datos.
-
-        Raises:
-            FileNotFoundError: Si la tabla no existe.
-        """
-        table_path = self.source_path / table_name
-
-        if not table_path.exists():
-            raise FileNotFoundError(
-                f"Tabla '{table_name}' no encontrada en {self.source_path}"
-            )
-
-        # Lee todo el directorio como dataset (soporta particiones)
-        return pq.read_table(table_path)
-
-    def load(self, tables: Optional[List[str]] = None) -> Dict[str, Union[Path, str]]:
-        """
-        Carga las tablas especificadas al destino configurado.
-
-        Args:
-            tables: Lista de nombres de tablas a cargar.
-                   Si es None, carga todas las tablas disponibles.
-
-        Returns:
-            Diccionario {nombre_tabla: path/identificador destino}.
-        """
-        if tables is None:
-            tables = self.list_tables()
-
-        loaded_tables: Dict[str, pa.Table] = {}
+        tables = self._list_tables()
+        results = {}
         for table_name in tables:
-            loaded_tables[table_name] = self._read_table(table_name)
-
-        return self.writer.write_all(loaded_tables)
-
-    def load_single(self, table_name: str) -> Union[Path, str]:
-        """
-        Carga una única tabla al destino.
-
-        Args:
-            table_name: Nombre de la tabla a cargar.
-
-        Returns:
-            Path o identificador del destino.
-        """
-        table = self._read_table(table_name)
-        return self.writer.write(table, table_name)
+            parquet_path = self.IO_operator.get_latest_parquet_path(
+                table_name, self.output_data_dir
+            )
+            if not parquet_path:
+                raise ValueError(
+                    f"No se encontró archivo Parquet para la tabla {table_name} en {self.output_data_dir}"
+                )
+            export_path = f"{self.exports_dir}/{table_name}.csv"
+            table = self.IO_operator.read_parquet(parquet_path)
+            self.IO_operator.save_csv(table, export_path)
+            results[table_name] = export_path
+        return results
 
 
 if __name__ == "__main__":
-    from load.writers.csv_writer import CSVWriter
-    from config.path_config import OUTPUT_DATA_DIR, EXPORTS_DIR
+    from utils.s3_io import S3IO
 
-    writer = CSVWriter(base_path=EXPORTS_DIR)
-    loader = Loader(source_path=OUTPUT_DATA_DIR, writer=writer)
+    s3_io = S3IO()
+    loader = Loader(IO_operator=s3_io)
     results = loader.load()
