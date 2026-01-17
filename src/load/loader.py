@@ -1,17 +1,29 @@
 """
-Módulo orquestador de la fase de carga del ETL.
+Módulo principal para la capa de carga para el pipeline ETL.
+
+Contexto:
+- Rol: Carga (Load)
+- Propósito: Exportar datos procesados desde Parquet a CSV en S3 para su uso final.
+- Dependencias clave: pyarrow, boto3
+
+Este módulo contiene la lógica para ejecutar la carga de datos procesados desde Parquet a CSV en S3 para su uso final analítico.
 """
 
 from typing import Dict, List
 from config.path_config import OUTPUT_DATA_DIR, EXPORTS_DIR
 
-import pyarrow as pa
-
 
 class Loader:
     """
-    Orquesta la fase de carga del flujo ETL
-    para exportar CSV a S3.
+    Abstracción de operaciones de carga de datos.
+
+    Responsabilidad:
+    - Listar las tablas disponibles en el directorio S3 de output.
+    - Leer archivos Parquet y exportarlos como CSV en S3 usando pyarrow y boto3.
+
+    Uso:
+    Instanciar con las dependencias IO_operator (S3IO), output_data_dir, exports_dir, y
+    utilizar el método load() para ejecutar la carga.
     """
 
     def __init__(
