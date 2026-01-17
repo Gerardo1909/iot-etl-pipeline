@@ -1,6 +1,12 @@
 """
-Módulo que centraliza la configuración de PySpark y las
-funciones de I/O relacionadas.
+Módulo de utilidades para operaciones Spark y acceso a datos en el pipeline ETL.
+
+Contexto:
+- Rol: Utilidades (Utilities)
+- Propósito: Centraliza la configuración de PySpark y las funciones de entrada/salida (I/O) con S3, facilitando la interoperabilidad entre Spark y pyarrow.
+- Dependencias clave: PySpark, pyarrow, S3IO
+
+Este módulo permite la integración eficiente entre Spark y almacenamiento en la nube para el pipeline ETL.
 """
 
 from pyspark.sql import DataFrame, SparkSession
@@ -13,7 +19,15 @@ from utils.s3_io import S3IO
 
 class SparkIO:
     """
-    Centraliza la configuración de PySpark y operaciones de I/O.
+    Abstracción de operaciones Spark y acceso a datos en el pipeline ETL.
+
+    Responsabilidad:
+    - Inicializar y exponer la sesión de Spark.
+    - Leer y escribir datos en S3 usando pyarrow y Spark DataFrame.
+    - Facilitar la interoperabilidad entre Spark y almacenamiento en la nube.
+
+    Uso:
+    Instanciar y utilizar para todas las operaciones de I/O y sesión Spark en el pipeline.
     """
 
     def __init__(self, app_name: str = "IOT_ETL"):
