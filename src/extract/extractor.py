@@ -1,5 +1,13 @@
 """
-Módulo con lógica de extracción de API.
+Módulo principal para la capa de extracción para el pipeline ETL.
+
+Contexto:
+- Rol: Extracción (Extract)
+- Propósito: Extraer datos crudos desde una API industrial (JSON) y almacenarlos en S3 para su posterior procesamiento.
+- Dependencias clave: requests, pyarrow, boto3
+
+Este módulo contiene la lógica para ejecutar la extracción de datos desde la fuente original y
+almacenarlos en S3 para su posterior procesamiento.
 """
 
 from typing import Dict, Any, List, Optional
@@ -8,8 +16,16 @@ from extract.http_client import RequestsHttpClient
 
 class Extractor:
     """
-    Clase que se encarga de la extracción de información
-    dentro del flujo ETL, guardando directamente en S3 usando S3IO (pyarrow+boto3).
+    Abstracción de operaciones de extracción de datos.
+
+    Responsabilidad:
+    - Usar RequestsHttpClient para obtener datos desde la API.
+    - Parsear información de tablas desde el payload JSON.
+    - Cargar datos crudos en S3 usando pyarrow y boto3.
+
+    Uso:
+    Instanciar con las dependencias RequestsHttpClient, IO_operator (S3IO) y raw_data_dir, y
+    utilizar el método extract() para ejecutar la extracción.
     """
 
     def __init__(
