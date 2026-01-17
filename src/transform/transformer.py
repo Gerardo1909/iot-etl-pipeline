@@ -1,16 +1,25 @@
 """
-Módulo orquestador del proceso de transformación.
+Módulo principal para la capa de transformación para el pipeline ETL.
+
+Contexto:
+- Rol: Transformación (Transform)
+- Propósito: Limpiar y transformar datos crudos en formatos procesados y construir dimensiones y hechos para análisis.
+- Dependencias clave: pyspark, pyarrow
+
+Este módulo contiene la lógica para ejecutar la transformación de datos desde la capa raw hacia las capas processed y output.
 """
 
 from typing import Dict, Type
 
 from pyspark.sql import DataFrame
 
-from transform.cleaners.base_cleaner import BaseCleaner
-from transform.cleaners.alerts_cleaner import AlertsCleaner
-from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
-from transform.cleaners.defects_cleaner import DefectsCleaner
-from transform.cleaners.maintenance_logs_cleaner import MaintenanceLogsCleaner
+# Cleaners de tablas específicas
+from transform.cleaners import (
+    AlertsCleaner,
+    DefectsCleaner,
+    MaintenanceLogsCleaner,
+    QualityChecksCleaner,
+)
 
 # Builders de dimensiones
 from transform.builders.dimensions import (
@@ -35,10 +44,16 @@ from transform.builders.facts import (
 
 class Transformer:
     """
-    Orquesta el proceso de transformación del pipeline ETL.
+    Abstracción de operaciones de transformación de datos.
 
-    Flujo:
-        Bronze (raw) → Cleaners → Silver (processed) → Builders → Gold (output)
+    Responsabilidad:
+    - Usar cleaners especializados para limpiar tablas raw.
+    - Construir dimensiones y hechos a partir de tablas limpias.
+    - Guardar resultados en las capas processed y output.
+
+    Uso:
+    Instanciar con las dependencias IO_operator (SparkIO), raw_data_dir, processed_data_dir, output_data_dir, y
+    utilizar el método transform() para ejecutar la transformación.
     """
 
     # Registro de cleaners especializados por tabla
