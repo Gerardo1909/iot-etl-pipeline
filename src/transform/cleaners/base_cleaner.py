@@ -1,14 +1,30 @@
 """
-Módulo que define la estructura base para la fase de limpieza.
+Módulo base para la fase de limpieza de datos en el pipeline ETL.
+
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Define la abstracción y lógica común para la limpieza de tablas en el proceso de transformación.
+- Dependencias clave: PySpark
+
+Este módulo sirve como base para cleaners especializados.
 """
+
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
+
 class BaseCleaner:
     """
-    Clase base para la fase de limpieza en el proceso de transformación de datos.
+    Abstracción base para la limpieza de datos en la fase de transformación.
+
+    Responsabilidad:
+    - Proveer un pipeline de limpieza estándar (duplicados, nulos, tipos, reglas de negocio).
+    - Servir como clase padre para cleaners específicos de cada tabla.
+
+    Uso:
+    Heredar y sobreescribir métodos según reglas de negocio particulares.
     """
-    
+
     def __init__(self, df: DataFrame, id_column: str):
         self.df = df
         self.id_column = id_column
@@ -23,7 +39,7 @@ class BaseCleaner:
         df = self._standardize_types(df)
         df = self._apply_business_rules(df)
         return df
-    
+
     def _handle_nulls(self, df: DataFrame) -> DataFrame:
         """
         Implementa lógica de manejo de valores nulos con lógica de negocio
@@ -48,4 +64,3 @@ class BaseCleaner:
         Implementa lógica de reglas de negocio para tablas que lo requieran.
         """
         return df
-        

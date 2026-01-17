@@ -1,5 +1,8 @@
 """
 Builders para tablas de hechos del modelo estrella.
+
+Incluye funciones para construir tablas de hechos a partir de datos procesados y dimensiones.
+Permite la integración de métricas y eventos clave en el modelo dimensional.
 """
 
 from transform.builders.facts.fact_production import build_fact_production

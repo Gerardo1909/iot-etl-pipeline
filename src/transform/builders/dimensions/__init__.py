@@ -1,5 +1,8 @@
 """
 Builders para tablas dimensionales del modelo estrella.
+
+Incluye funciones para construir dimensiones simples, derivadas y generadas.
+Permite la generación de tablas de referencia para análisis y joins en el modelo dimensional.
 """
 
 from transform.builders.dimensions.dim_date import build_dim_date

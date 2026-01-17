@@ -1,15 +1,29 @@
 """
-Módulo que se encarga de la limpieza específica para la tabla 'Alerts'.
+Módulo de limpieza especializada para la tabla 'alerts' en el pipeline ETL.
+
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Implementa reglas de negocio específicas para la limpieza de alertas generadas por sensores industriales.
+- Dependencias clave: PySpark, BaseCleaner
+
+Este módulo extiende la lógica base de limpieza para la tabla de alertas.
 """
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from transform.cleaners.base_cleaner import BaseCleaner
 
-
+    
 class AlertsCleaner(BaseCleaner):
     """
-    Clase específica para la limpieza de la tabla 'Alerts'.
+    Cleaner especializado para la tabla 'alerts' en la fase de transformación.
+
+    Responsabilidad:
+    - Aplicar reglas de negocio específicas para la limpieza de alertas.
+    - Derivar columnas y asegurar la calidad de los datos de alertas.
+
+    Uso:
+    Instanciar con un DataFrame de alertas y llamar a clean().
     """
 
     def __init__(self, df: DataFrame, id_column: str = "alert_id"):

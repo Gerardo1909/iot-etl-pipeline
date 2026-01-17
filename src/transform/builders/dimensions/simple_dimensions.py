@@ -1,8 +1,12 @@
 """
-Configuración de dimensiones simples.
+Módulo de configuración y construcción de dimensiones simples para el modelo estrella del pipeline ETL.
 
-Las dimensiones simples son aquellas que mapean 1:1 con una tabla fuente,
-básicamente renombrando la PK a SK y seleccionando columnas específicas.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Define la configuración y lógica para construir dimensiones simples (1:1 con tablas fuente) en el modelo dimensional.
+- Dependencias clave: PySpark, dataclasses
+
+Este módulo permite la generación automatizada de dimensiones simples a partir de tablas fuente.
 """
 
 from typing import Dict, List, Optional
@@ -13,7 +17,11 @@ from pyspark.sql import functions as F
 
 @dataclass
 class SimpleDimensionConfig:
-    """Configuración para una dimensión simple."""
+    """
+    Configuración para una dimensión simple del modelo estrella.
+
+    Representa los parámetros necesarios para mapear una tabla fuente a una dimensión simple.
+    """
 
     source_table: str
     natural_key: str

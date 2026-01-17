@@ -1,6 +1,12 @@
 """
-Módulo para manejar operaciones de guardado de archivos Parquet y
-CSV en S3 usando pyarrow y boto3.
+Módulo de utilidades para operaciones de almacenamiento en S3 en el pipeline ETL.
+
+Contexto:
+- Rol: Utilidades (Utilities)
+- Propósito: Abstrae la lógica de guardado, lectura y manejo de archivos Parquet y CSV en S3 usando pyarrow y boto3.
+- Dependencias clave: pyarrow, boto3
+
+Este módulo permite la integración eficiente entre el pipeline ETL y el almacenamiento en la nube.
 """
 
 import os
@@ -16,8 +22,15 @@ from urllib.parse import urlparse
 
 class S3IO:
     """
-    Clase para manejar operaciones de guardado de archivos Parquet y
-    CSV en S3 usando pyarrow y boto3.
+    Abstracción de operaciones de almacenamiento en S3 para el pipeline ETL.
+
+    Responsabilidad:
+    - Guardar y leer archivos Parquet y CSV en S3.
+    - Listar y gestionar objetos en buckets S3.
+    - Facilitar la interoperabilidad entre pyarrow y S3.
+
+    Uso:
+    Instanciar y utilizar para todas las operaciones de I/O con S3 en el pipeline.
     """
 
     def __init__(self):
@@ -78,13 +91,6 @@ class S3IO:
         # Generar nombre de archivo con timestamp
         timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
         parquet_filename = f"{timestamp}.parquet"
-        final_key = f"{key_prefix}{parquet_filename}"
-        final_s3_path = f"s3://{bucket}/{final_key}"
-        with tempfile.NamedTemporaryFile(suffix=".parquet") as tmp:
-            pq.write_table(table, tmp.name)
-            tmp.flush()
-            self.s3.upload_file(tmp.name, bucket, final_key)
-        return final_s3_path
 
     def save_csv(
         self,

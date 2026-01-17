@@ -1,5 +1,12 @@
 """
-Módulo que se encarga de la limpieza específica para la tabla 'QualityChecks'.
+Módulo de limpieza especializada para la tabla 'quality_checks' en el pipeline ETL.
+
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Implementa reglas de negocio específicas para la limpieza de registros de quality checks.
+- Dependencias clave: PySpark, BaseCleaner
+
+Este módulo extiende la lógica base de limpieza para la tabla de quality checks.
 """
 
 from pyspark.sql import DataFrame
@@ -9,7 +16,14 @@ from transform.cleaners.base_cleaner import BaseCleaner
 
 class QualityChecksCleaner(BaseCleaner):
     """
-    Clase específica para la limpieza de la tabla 'QualityChecks'.
+    Cleaner especializado para la tabla 'quality_checks' en la fase de transformación.
+
+    Responsabilidad:
+    - Aplicar reglas de negocio específicas para la limpieza de registros de quality checks.
+    - Derivar columnas y asegurar la calidad de los datos de quality checks.
+
+    Uso:
+    Instanciar con un DataFrame de registros de quality checks y llamar a clean().
     """
 
     def __init__(self, df: DataFrame, id_column: str = "check_id"):

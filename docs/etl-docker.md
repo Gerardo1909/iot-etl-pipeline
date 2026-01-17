@@ -1,84 +1,54 @@
-# Contenedor ETL
+# Contenedor ETL: Desarrollo y Pruebas
 
-Imagen Docker con PySpark para ejecutar el pipeline ETL de forma aislada.
+Esta guía describe cómo utilizar Docker para ejecutar y probar el pipeline ETL de NexusForge Industries de forma aislada y reproducible.
 
 ## Requisitos
 
 - Docker Desktop corriendo
+- Imagen ETL construida (ver [Guía de Inicio](getting-started.md))
 
-## Construcción
-
-```bash
-docker-compose build
-```
-
-> La imagen incluye Python 3.13, PySpark 4.0 y Java 17. Tamaño aproximado: ~2.4GB
-
-## Comandos
-
-### Ejecutar fases individuales
+## Construcción de la Imagen
 
 ```bash
-# Extract: descarga datos de API → data/raw/
-docker-compose run --rm etl python -m extract.extractor
-
-# Transform: limpia y modela → data/output/
-docker-compose run --rm etl python -m transform.transformer
-
-# Load: exporta a CSV → data/exports/
-docker-compose run --rm etl python -m load.loader
+$ docker-compose build
 ```
 
-### Ejecutar tests
+La imagen incluye Python 3.13, PySpark 4.0 y Java 17. Tamaño aproximado: ~2.4GB
+
+## Ejecución de Fases ETL
+
+```bash
+# Extract: descarga datos de API → S3/data/raw/
+$ docker-compose run --rm etl python -m extract.extractor
+
+# Transform: limpia y modela → S3/data/output/
+$ docker-compose run --rm etl python -m transform.transformer
+
+# Load: exporta a CSV → S3/data/exports/
+$ docker-compose run --rm etl python -m load.loader
+```
+
+- Cada comando ejecuta una fase del pipeline de manera independiente y reproducible.
+- Los datos se almacenan y procesan en S3, facilitando la integración con herramientas analíticas.
+
+## Ejecución de Tests
 
 ```bash
 # Todos los tests con cobertura
-docker-compose run --rm test
+$ docker-compose run --rm test
 
 # Tests específicos
-docker-compose run --rm test pytest tests/unit/extract -v
+$ docker-compose run --rm test pytest tests/unit/extract -v
 ```
 
-### Acceso interactivo
+## Beneficios del Enfoque Contenerizado
 
-```bash
-# Shell bash dentro del contenedor
-docker-compose run --rm etl bash
+- Entornos consistentes y portables
+- Fácil integración con CI/CD
+- Aislamiento de dependencias y recursos
 
-# Consola Python/PySpark
-docker-compose run --rm etl python
-```
+---
 
-## Limpieza
-
-```bash
-# Detener contenedores
-docker-compose down
-
-# Eliminar imagen (forzar rebuild)
-docker-compose down --rmi local
-
-# Limpiar todo (contenedores + volúmenes + imágenes)
-docker-compose down -v --rmi local
-```
-
-## Volúmenes montados
-
-| Host | Contenedor | Modo |
-|------|------------|------|
-| `data/` | `/app/data` | lectura/escritura |
-| `src/` | `/app/src` | solo lectura |
-| `config/` | `/app/config` | solo lectura |
-| `.env` | `/app/.env` | solo lectura |
-
-> Los cambios en `src/` y `config/` se reflejan sin rebuild.
-
-## Estructura de datos
-
-```
-data/
-├── raw/        # Bronze: datos crudos de la API (Parquet)
-├── processed/  # Silver: datos limpios (Parquet)
-├── output/     # Gold: modelo dimensional (Parquet)
-└── exports/    # Exportaciones finales (CSV)
-```
+Para detalles sobre orquestación avanzada y arquitectura, consulta:
+- [orchestration-docker.md](orchestration-docker.md)
+- [README principal](../README.md)

@@ -1,8 +1,12 @@
 """
-Configuración centralizada de rutas y variables de entorno del proyecto.
+Módulo de configuración centralizada de rutas y variables de entorno para el pipeline ETL.
 
-Este módulo centraliza todas las rutas y configuraciones utilizadas
-a lo largo del pipeline ETL.
+Contexto:
+- Rol: Configuración (Utilities)
+- Propósito: Centraliza rutas, variables de entorno y parámetros de conexión utilizados en todas las fases del pipeline ETL.
+- Dependencias clave: dotenv, os, pathlib
+
+Este módulo permite mantener la configuración desacoplada y reutilizable en todo el proyecto.
 """
 
 import os
@@ -50,17 +54,3 @@ def get_api_url() -> str:
         f"type={API_CONFIG['dataset_type']}&"
         f"rows={API_CONFIG['rows']}"
     )
-
-
-def ensure_directories() -> None:
-    """
-    Dummy para compatibilidad. No hace nada en S3.
-    """
-    pass
-
-
-def get_path_for_environment(local_path):
-    """
-    Dummy para compatibilidad. No hace nada en S3.
-    """
-    return str(local_path)

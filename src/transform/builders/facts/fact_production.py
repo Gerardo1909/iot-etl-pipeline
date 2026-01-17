@@ -1,8 +1,12 @@
 """
-Builder para fact_production.
+Módulo builder para la tabla de hechos 'fact_production' en el pipeline ETL.
 
-Granularidad: order + line + shift + date
-Combina production_output con production_orders para métricas de producción.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Construye la tabla de hechos de producción, combinando salidas de producción y órdenes para calcular métricas clave.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica de integración y cálculo de métricas de producción para el modelo dimensional.
 """
 
 from pyspark.sql import DataFrame

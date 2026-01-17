@@ -1,8 +1,12 @@
 """
-Builder para fact_alerts.
+Módulo builder para la tabla de hechos 'fact_alerts' en el pipeline ETL.
 
-Granularidad: alert + sensor + machine + date
-Registra alertas de sensores con tiempos de resolución.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Construye la tabla de hechos de alertas, integrando eventos de sensores y dimensiones para registrar alertas y tiempos de resolución.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica de integración y cálculo de métricas de alertas para el modelo dimensional.
 """
 
 from pyspark.sql import DataFrame
