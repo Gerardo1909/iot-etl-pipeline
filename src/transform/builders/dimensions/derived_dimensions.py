@@ -1,9 +1,12 @@
 """
-Builders para dimensiones derivadas.
+Módulo builder para dimensiones derivadas en el pipeline ETL.
 
-Las dimensiones derivadas son aquellas que extraen valores únicos
-de una o más columnas de las tablas fuente y les asignan una SK o que
-añaden métricas adicionales.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Construye dimensiones derivadas extrayendo valores únicos y generando claves sustitutas (SK) a partir de tablas fuente.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica para construir dimensiones que requieren lógica adicional o combinaciones únicas.
 """
 
 from pyspark.sql import DataFrame

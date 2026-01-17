@@ -1,8 +1,12 @@
 """
-Generador de la dimensión dim_date.
+Módulo builder para la dimensión 'dim_date' en el pipeline ETL.
 
-Esta dimensión se genera a partir de un rango de fechas,
-no se extrae de datos existentes.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Genera la dimensión de fechas a partir de un rango configurable, útil para análisis temporal en el modelo dimensional.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica para construir la tabla de fechas sin depender de datos fuente.
 """
 
 from datetime import date

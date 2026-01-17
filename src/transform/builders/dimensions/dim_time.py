@@ -1,8 +1,12 @@
 """
-Generador de la dimensión dim_time.
+Módulo builder para la dimensión 'dim_time' en el pipeline ETL.
 
-Esta dimensión se genera con todas las horas del día,
-no se extrae de datos existentes.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Genera la dimensión de tiempo con granularidad horaria, útil para análisis temporal en el modelo dimensional.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica para construir la tabla de horas sin depender de datos fuente.
 """
 
 from pyspark.sql import DataFrame, SparkSession
