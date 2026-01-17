@@ -1,10 +1,12 @@
 """
-DAG principal del pipeline ETL de IoT.
+Módulo de configuración de DAG para orquestación del flujo ETL.
 
-Ejecuta las tres fases del ETL en contenedores Docker:
-1. Extract: Obtiene datos de la API y los guarda en data/raw
-2. Transform: Limpia datos y construye modelo dimensional en data/output
-3. Load: Exporta las tablas a CSV
+Contexto:
+- Rol: Ejecución de orquestación (Airflow DAG)
+- Propósito: Se encarga de configurar y orquestar las tareas del pipeline ETL usando contenedores Docker.
+- Dependencias clave: airflow, docker, os, datetime
+
+Este módulo permite configurar y ejecutar el flujo ETL de manera automatizada y reproducible.
 """
 
 import os
