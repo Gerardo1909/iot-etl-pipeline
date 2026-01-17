@@ -1,5 +1,12 @@
 """
-Módulo que se encarga de la limpieza específica para la tabla 'MaintenanceLogs'.
+Módulo de limpieza especializada para la tabla 'maintenance_logs' en el pipeline ETL.
+
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Implementa reglas de negocio específicas para la limpieza de registros de mantenimiento.
+- Dependencias clave: PySpark, BaseCleaner
+
+Este módulo extiende la lógica base de limpieza para la tabla de mantenimiento.
 """
 
 from pyspark.sql import DataFrame
@@ -9,7 +16,14 @@ from transform.cleaners.base_cleaner import BaseCleaner
 
 class MaintenanceLogsCleaner(BaseCleaner):
     """
-    Clase específica para la limpieza de la tabla 'MaintenanceLogs'.
+    Cleaner especializado para la tabla 'maintenance_logs' en la fase de transformación.
+
+    Responsabilidad:
+    - Aplicar reglas de negocio específicas para la limpieza de registros de mantenimiento.
+    - Derivar columnas y asegurar la calidad de los datos de mantenimiento.
+    
+    Uso:
+    Instanciar con un DataFrame de registros de mantenimiento y llamar a clean().
     """
 
     def __init__(self, df: DataFrame, id_column: str = "log_id"):
