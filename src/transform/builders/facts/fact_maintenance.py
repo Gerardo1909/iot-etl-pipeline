@@ -1,8 +1,12 @@
 """
-Builder para fact_maintenance.
+Módulo builder para la tabla de hechos 'fact_maintenance' en el pipeline ETL.
 
-Granularidad: maintenance_log + machine + date
-Registra eventos de mantenimiento con sus costos y tiempos.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Construye la tabla de hechos de mantenimiento, integrando logs y dimensiones para registrar eventos y métricas de mantenimiento.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica de integración y cálculo de métricas de mantenimiento para el modelo dimensional.
 """
 
 from pyspark.sql import DataFrame

@@ -1,8 +1,12 @@
 """
-Builder para fact_quality.
+Módulo builder para la tabla de hechos 'fact_quality' en el pipeline ETL.
 
-Granularidad: check + order + line + date
-Combina quality_checks con defects para métricas de calidad.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Construye la tabla de hechos de calidad, integrando inspecciones y defectos para calcular métricas de calidad.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica de integración y cálculo de métricas de calidad para el modelo dimensional.
 """
 
 from pyspark.sql import DataFrame

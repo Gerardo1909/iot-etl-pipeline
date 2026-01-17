@@ -1,8 +1,12 @@
-""" 
-Builder para fact_sensor_readings.
+"""
+Módulo builder para la tabla de hechos 'fact_sensor_readings' en el pipeline ETL.
 
-Granularidad: 1 fila por lectura (evento).
-Registra cada lectura del sensor con sus claves a dimensiones.
+Contexto:
+- Fase: Transformación (Transform)
+- Propósito: Construye la tabla de hechos de lecturas de sensores, registrando cada evento y asociándolo a dimensiones relevantes.
+- Dependencias clave: PySpark
+
+Este módulo implementa la lógica de integración y registro de eventos de sensores para el modelo dimensional.
 """
 
 from pyspark.sql import DataFrame
@@ -90,7 +94,9 @@ def build_fact_sensor_readings(
     )
 
     # SK del evento: usar reading_id
-    readings = readings.withColumn("sensor_reading_sk", F.col("reading_id").cast("long"))
+    readings = readings.withColumn(
+        "sensor_reading_sk", F.col("reading_id").cast("long")
+    )
 
     # Seleccionar columnas finales (evento)
     return readings.select(
