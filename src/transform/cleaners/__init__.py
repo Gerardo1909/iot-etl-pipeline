@@ -9,8 +9,10 @@ from transform.cleaners.alerts_cleaner import AlertsCleaner
 from transform.cleaners.defects_cleaner import DefectsCleaner
 from transform.cleaners.maintenance_logs_cleaner import MaintenanceLogsCleaner
 from transform.cleaners.quality_checks_cleaner import QualityChecksCleaner
+from transform.cleaners.base_cleaner import BaseCleaner
 
 __all__ = [
+    "BaseCleaner",
     "AlertsCleaner",
     "DefectsCleaner",
     "MaintenanceLogsCleaner",
