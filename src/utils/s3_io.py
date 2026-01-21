@@ -91,6 +91,13 @@ class S3IO:
         # Generar nombre de archivo con timestamp
         timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
         parquet_filename = f"{timestamp}.parquet"
+        final_key = f"{key_prefix}{parquet_filename}"
+        final_s3_path = f"s3://{bucket}/{final_key}"
+        with tempfile.NamedTemporaryFile(suffix=".parquet") as tmp:
+            pq.write_table(table, tmp.name)
+            tmp.flush()
+            self.s3.upload_file(tmp.name, bucket, final_key)
+        return final_s3_path
 
     def save_csv(
         self,
