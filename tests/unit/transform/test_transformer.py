@@ -129,7 +129,6 @@ class TestTransformerCleanTables:
             if name == "alerts"
             else None
         )
-        mock_spark_io.write_timestamped_parquet = Mock()
 
         transformer = Transformer(
             spark_io=mock_spark_io,
@@ -175,7 +174,6 @@ class TestTransformerCleanTables:
             return None
 
         mock_spark_io.read_latest_parquet = Mock(side_effect=mock_read)
-        mock_spark_io.write_timestamped_parquet = Mock()
 
         transformer = Transformer(
             spark_io=mock_spark_io,
