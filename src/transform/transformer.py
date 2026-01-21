@@ -15,6 +15,7 @@ from pyspark.sql import DataFrame
 
 # Cleaners de tablas específicas
 from transform.cleaners import (
+    BaseCleaner,
     AlertsCleaner,
     DefectsCleaner,
     MaintenanceLogsCleaner,
