@@ -19,9 +19,6 @@ $ docker-compose build
 $ docker-compose run --rm etl python -m extract.extractor
 $ docker-compose run --rm etl python -m transform.transformer
 $ docker-compose run --rm etl python -m load.loader
-
-# 3. Verificar resultados
-$ ls data/exports/
 ```
 
 - Cada fase puede ejecutarse de forma independiente.
@@ -29,21 +26,18 @@ $ ls data/exports/
 
 ## Ejecución Orquestada (Producción)
 
-- Utiliza Apache Airflow para ejecutar el pipeline completo de forma programada.
-- Ver detalles y mejores prácticas en [orchestration-docker.md](orchestration-docker.md).
+- Se utiliza Apache Airflow para ejecutar el pipeline completo de forma programada. Los detalles 
+de ejecución se detallan en [orchestration-docker.md](orchestration-docker.md).
 
-## Estructura de Carpetas
+## Estructura de Carpetas (S3)
 
-- `data/raw/`: Datos crudos descargados de la API
-- `data/processed/`: Datos limpios y validados
-- `data/output/`: Tablas dimensionales y de hechos listas para análisis
-- `data/exports/`: Archivos CSV exportados para consumo externo
+- `s3a://your_s3_bucket_name_here/raw/`: Datos crudos descargados de la API
+- `s3a://your_s3_bucket_name_here/processed/`: Datos limpios y validados
+- `s3a://your_s3_bucket_name_here/output/`: Tablas dimensionales y de hechos listas para análisis
+- `s3a://your_s3_bucket_name_here/exports/`: Archivos CSV exportados para consumo externo
 
 ## Recursos Relacionados
 
 - [etl-docker.md](etl-docker.md): Uso de Docker y pruebas
 - [orchestration-docker.md](orchestration-docker.md): Orquestación avanzada y Airflow
-
----
-
-Para detalles sobre el modelo dimensional, beneficios y arquitectura, consulta el [README principal](../README.md).
+- [star-schema.md](star-schema.md): Documentación del esquema estrella alimentado
