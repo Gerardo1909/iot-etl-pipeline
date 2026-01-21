@@ -127,7 +127,6 @@ def build_fact_production(
     return output.select(
         "production_sk",
         "date_sk",
-        F.col("date_key").alias("time_sk"),  # Simplificado
         "factory_sk",
         "line_sk",
         "product_sk",

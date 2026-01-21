@@ -80,7 +80,7 @@ Se proporciona una descripción detallada de las tablas dimensionales y de hecho
 
 - **fact_production**
 	- PK: `production_sk`
-	- FK: `date_sk`, `time_sk`, `factory_sk`, `line_sk`, `product_sk`, `shift_sk`, `order_sk`
+	- FK: `date_sk`, `factory_sk`, `line_sk`, `product_sk`, `shift_sk`, `order_sk`
 	- Medidas: `units_produced`, `units_defective`, `downtime_minutes`, `efficiency_percentage`, `target_units`, `cycle_time_avg`
 	- Granularidad: registro por unidad/orden/turno/linea según generación; tabla central para KPIs de producción.
 	- Recomendación: particionar por `date_sk` y mantener metadatos de versionado si se re-procesan.
