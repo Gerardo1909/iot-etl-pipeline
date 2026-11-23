@@ -1,8 +1,22 @@
 # Pipeline ETL - NexusForge Industries (IoT)
 
+An end-to-end ETL pipeline for IoT sensor data from industrial production plants. It extracts raw JSON from an industrial API, cleans and validates it with PySpark, and models it into a star schema (fact and dimension tables) stored in S3, with CSV exports for analytics and BI. The pipeline is orchestrated with Apache Airflow and runs in Docker.
+
+## Quickstart
+
+Copy `.env.example` to `.env` and fill in the credentials and S3 paths. Then run the following from the project root (commands taken from [docs/getting-started.md](docs/getting-started.md) and [docs/etl-docker.md](docs/etl-docker.md)):
+
+```bash
+docker-compose build
+docker-compose run --rm etl python -m extract.extractor
+docker-compose run --rm etl python -m transform.transformer
+docker-compose run --rm etl python -m load.loader
+docker-compose run --rm test
+```
+
 ## Descripción General
 
-Pipeline de datos para **NexusForge Industries**, empresa líder en manufactura inteligente que opera plantas de producción equipadas con sensores IoT industriales. El sistema procesa millones de lecturas de sensores por hora para alimentar dashboards ejecutivos y detectar anomalías en tiempo casi-real.
+Pipeline de datos para **NexusForge Industries**, empresa líder en manufactura inteligente que opera plantas de producción equipadas con sensores IoT industriales. El sistema está diseñado para procesar grandes volúmenes de lecturas de sensores y alimentar dashboards ejecutivos y detectar anomalías en tiempo casi-real.
 
 ![etl-workflow](resources/etl_workflow.png)
 
@@ -54,7 +68,7 @@ Para profundizar en la operación, despliegue y arquitectura del pipeline, consu
 
 ## Operación, Logros y Beneficios
 
-- **Escalabilidad**: Procesa millones de registros/hora gracias a PySpark y S3.
+- **Escalabilidad**: Diseñada para grandes volúmenes de datos, con PySpark para procesamiento distribuido y S3 para almacenamiento.
 - **Calidad de datos**: Limpieza robusta, validación y reglas de negocio implementadas.
 - **Automatización**: Orquestación con Airflow y ejecución reproducible vía Docker.
 - **Trazabilidad**: Versionado de datos y logs de ejecución accesibles.
